@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Form Filler Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- ── HEADER ── -->
+  <header id="hdr">
+    <div id="brand">
+      <svg id="brand-mark" viewBox="0 0 20 20" fill="none">
+        <path d="M10 2L12.5 7.5H18L13.5 11L15.5 17L10 13.5L4.5 17L6.5 11L2 7.5H7.5L10 2Z" fill="currentColor"/>
+      </svg>
+      <span id="brand-name">AI Form Filler Pro</span>
+      <span id="version-tag">v2</span>
+    </div>
+    <div id="hdr-right">
+      <span id="model-badge">—</span>
+      <span id="score-badge" class="hidden"></span>
+      <button id="btn-settings" title="Settings" class="icon-btn">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── PAGE BAR ── -->
+  <div id="page-bar">
+    <div id="page-favicon-wrap"><img id="page-favicon" src="" alt="" /></div>
+    <span id="page-title">Loading…</span>
+    <span id="field-count-badge" class="hidden"></span>
+    <span id="page-type-badge" class="hidden"></span>
+  </div>
+
+  <!-- ── NAV TABS ── -->
+  <nav id="main-tabs">
+    <button class="main-tab active" data-tab="fill">
+      <svg viewBox="0 0 14 14" fill="none"><path d="M2 2h10M2 5h7M2 8h9M2 11h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      Fill
+    </button>
+    <button class="main-tab" data-tab="profile">
+      <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="4.5" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M1.5 12.5c0-3 2.5-4.5 5.5-4.5s5.5 1.5 5.5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      Profile
+    </button>
+    <button class="main-tab" data-tab="apply">
+      <svg viewBox="0 0 14 14" fill="none"><path d="M7 1L9 6h5L9.5 9l1.5 5L7 11l-4 3 1.5-5L1 6h5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      Apply
+    </button>
+    <button class="main-tab" data-tab="history">
+      <svg viewBox="0 0 14 14" fill="none"><path d="M7 3v4l2.5 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.4"/></svg>
+      History
+    </button>
+    <button class="main-tab" data-tab="learn">
+      <svg viewBox="0 0 14 14" fill="none"><path d="M2 10L7 2l5 8H2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      Learned
+    </button>
+  </nav>
+
+  <!-- ══ TAB: FILL ══ -->
+  <div id="tab-fill" class="tab-panel active">
+
+    <!-- Input mode tabs -->
+    <div id="mode-tabs">
+      <button class="mode-tab active" data-mode="describe">Describe</button>
+      <button class="mode-tab" data-mode="resume">Résumé</button>
+    </div>
+
+    <!-- Describe -->
+    <div id="sec-describe" class="input-section">
+      <textarea id="inp-describe"
+        placeholder="Describe yourself in any language…&#10;&#10;e.g. Sarah Chen, senior React engineer 7 years, CS from UC Berkeley, SF, sarah@dev.io. Seeking $160k full-time remote."
+        spellcheck="false"></textarea>
+      <div id="describe-examples">
+        <span class="ex-label">Try:</span>
+        <button class="chip" data-example="developer">Dev</button>
+        <button class="chip" data-example="designer">Designer</button>
+        <button class="chip" data-example="manager">Manager</button>
+        <button class="chip" data-example="student">Student</button>
+      </div>
+    </div>
+
+    <!-- Resume -->
+    <div id="sec-resume" class="input-section hidden">
+      <textarea id="inp-resume"
+        placeholder="Paste plain-text résumé…&#10;&#10;John Smith · john@email.com&#10;Senior Engineer at Google 2020–Present&#10;BS Computer Science, Stanford 2018"
+        spellcheck="false" style="font-family:'DM Mono',monospace;font-size:11px;"></textarea>
+    </div>
+
+    <!-- Speed control -->
+    <div id="speed-row">
+      <span class="field-label">Fill speed</span>
+      <div id="speed-btns">
+        <button class="speed-btn active" data-speed="14">Normal</button>
+        <button class="speed-btn" data-speed="6">Fast</button>
+        <button class="speed-btn" data-speed="28">Slow</button>
+      </div>
+    </div>
+
+    <!-- Action -->
+    <div id="sec-action">
+      <button id="btn-fill">
+        <span id="fill-dot"></span>
+        <span id="fill-label">Fill page with AI →</span>
+      </button>
+      <button id="btn-scan" class="sec-btn" title="Preview & highlight detected fields">Scan</button>
+    </div>
+
+    <!-- Status -->
+    <div id="status-bar">
+      <div id="status-dot" class="dot-idle"></div>
+      <span id="status-text">Describe yourself and fill any form</span>
+    </div>
+
+    <!-- Confidence bar (hidden until fill) -->
+    <div id="confidence-bar" class="hidden">
+      <div id="confidence-track"><div id="confidence-fill"></div></div>
+      <span id="confidence-label"></span>
+    </div>
+
+    <!-- Results -->
+    <section id="sec-results" class="hidden">
+      <div class="sec-hdr">
+        <span class="sec-title">Filled fields</span>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span id="results-count" class="count-badge"></span>
+          <button id="btn-copy-json" class="ghost-btn" title="Copy filled data as JSON">Copy JSON</button>
+        </div>
+      </div>
+      <div id="results-list"></div>
+    </section>
+
+  </div>
+
+  <!-- ══ TAB: PROFILE ══ -->
+  <div id="tab-profile" class="tab-panel hidden">
+    <div class="tab-inner">
+      <div class="sec-hdr">
+        <span class="sec-title">Saved profiles</span>
+        <button id="btn-add-profile" class="ghost-btn">+ New</button>
+      </div>
+
+      <!-- Profile list -->
+      <div id="profile-list"></div>
+
+      <!-- Profile editor (hidden by default) -->
+      <div id="profile-editor" class="hidden">
+        <div class="sec-hdr" style="margin-top:10px">
+          <span class="sec-title" id="editor-title">New profile</span>
+          <button id="btn-close-editor" class="ghost-btn">×</button>
+        </div>
+        <div class="form-row">
+          <label class="field-label">Profile name</label>
+          <input id="prof-name" type="text" placeholder="e.g. Full-time job hunt" />
+        </div>
+        <div class="form-row">
+          <label class="field-label">Description / resume text</label>
+          <textarea id="prof-desc" placeholder="Paste your description or resume text here…" style="min-height:90px;font-size:11.5px;"></textarea>
+        </div>
+        <div class="form-row">
+          <label class="field-label">Profile type</label>
+          <select id="prof-type">
+            <option value="job">Job application</option>
+            <option value="freelance">Freelance profile</option>
+            <option value="college">College application</option>
+            <option value="general">General</option>
+          </select>
+        </div>
+        <div class="form-row-btns">
+          <button id="btn-save-profile" class="primary-btn">Save profile</button>
+          <button id="btn-export-profile" class="sec-btn">Export JSON</button>
+        </div>
+      </div>
+
+      <!-- Import -->
+      <div style="margin-top:8px">
+        <button id="btn-import-profile" class="ghost-btn" style="font-size:10px;">↑ Import profile JSON</button>
+        <input id="inp-import" type="file" accept=".json" class="hidden" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: SMART APPLY ══ -->
+  <div id="tab-apply" class="tab-panel hidden">
+    <div class="tab-inner">
+      <div id="job-context-card" class="context-card hidden">
+        <div class="ctx-row">
+          <span class="ctx-label">Role detected</span>
+          <span id="ctx-role" class="ctx-val">—</span>
+        </div>
+        <div class="ctx-row">
+          <span class="ctx-label">Company</span>
+          <span id="ctx-company" class="ctx-val">—</span>
+        </div>
+        <div class="ctx-row">
+          <span class="ctx-label">Custom questions</span>
+          <span id="ctx-questions" class="ctx-val">—</span>
+        </div>
+        <div class="ctx-row">
+          <span class="ctx-label">Navigation</span>
+          <span id="ctx-nav" class="ctx-val">—</span>
+        </div>
+      </div>
+
+      <div id="apply-not-job" class="info-box">
+        <p>Navigate to a job application page, then click Analyze to detect the job context and enable smart apply.</p>
+      </div>
+
+      <button id="btn-analyze" class="sec-btn" style="width:100%;margin-bottom:8px;">Analyze this page →</button>
+
+      <div id="apply-actions" class="hidden">
+        <div class="sec-hdr" style="margin-top:2px">
+          <span class="sec-title">Smart Apply</span>
+        </div>
+
+        <div id="questions-list" class="hidden">
+          <div class="sec-hdr">
+            <span class="sec-title">Custom questions detected</span>
+            <span id="q-count" class="count-badge"></span>
+          </div>
+          <div id="q-items"></div>
+          <button id="btn-gen-answers" class="primary-btn" style="margin-top:6px;width:100%;">Generate AI answers →</button>
+        </div>
+
+        <div class="apply-btn-group">
+          <button id="btn-smart-fill" class="primary-btn" style="flex:1">Fill form with AI →</button>
+          <button id="btn-click-next" class="sec-btn" title="Click Next/Continue button on page">Next →</button>
+        </div>
+
+        <div id="apply-status" class="status-box hidden"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: HISTORY ══ -->
+  <div id="tab-history" class="tab-panel hidden">
+    <div class="tab-inner">
+      <div class="sec-hdr">
+        <span class="sec-title">Fill history</span>
+        <button id="btn-clear-history" class="ghost-btn">Clear all</button>
+      </div>
+      <div id="history-list"></div>
+    </div>
+  </div>
+
+  <!-- ══ TAB: LEARNED ══ -->
+  <div id="tab-learn" class="tab-panel hidden">
+    <div class="tab-inner">
+      <div class="sec-hdr">
+        <span class="sec-title">Correction learning</span>
+        <button id="btn-clear-corrections" class="ghost-btn">Clear</button>
+      </div>
+      <p class="info-text">When you edit an AI-filled field on any site, the correction is saved here and used on future fills for that domain.</p>
+      <div id="corrections-list"></div>
+    </div>
+  </div>
+
+  <!-- ══ SETTINGS PANEL (slide-in) ══ -->
+  <div id="settings-panel" class="hidden">
+    <div class="settings-hdr">
+      <span class="sec-title">Settings</span>
+      <button id="btn-close-settings" class="ghost-btn">×</button>
+    </div>
+
+    <div class="settings-body">
+      <div class="form-row">
+        <label class="field-label">AI provider</label>
+        <select id="sel-provider">
+          <option value="groq">Groq (Free · LLaMA 3.3 70B)</option>
+          <option value="anthropic">Anthropic (Claude Haiku)</option>
+          <option value="openai">OpenAI (GPT-4o mini)</option>
+        </select>
+      </div>
+
+      <div class="form-row" id="row-groq-key">
+        <div class="apikey-label-row">
+          <label class="field-label">Groq API Key</label>
+          <a href="https://console.groq.com" target="_blank" class="link-sm">Get free key ↗</a>
+        </div>
+        <div class="apikey-row">
+          <input id="inp-groq-key" type="password" placeholder="gsk_…" autocomplete="off" spellcheck="false" style="font-family:'DM Mono',monospace;font-size:11px;" />
+          <button id="btn-toggle-groq" class="sec-btn">Show</button>
+        </div>
+      </div>
+
+      <div class="form-row hidden" id="row-anthropic-key">
+        <div class="apikey-label-row">
+          <label class="field-label">Anthropic API Key</label>
+          <a href="https://console.anthropic.com" target="_blank" class="link-sm">Get key ↗</a>
+        </div>
+        <div class="apikey-row">
+          <input id="inp-anthropic-key" type="password" placeholder="sk-ant-…" autocomplete="off" spellcheck="false" style="font-family:'DM Mono',monospace;font-size:11px;" />
+          <button id="btn-toggle-anthropic" class="sec-btn">Show</button>
+        </div>
+      </div>
+
+      <div class="form-row hidden" id="row-openai-key">
+        <div class="apikey-label-row">
+          <label class="field-label">OpenAI API Key</label>
+          <a href="https://platform.openai.com" target="_blank" class="link-sm">Get key ↗</a>
+        </div>
+        <div class="apikey-row">
+          <input id="inp-openai-key" type="password" placeholder="sk-…" autocomplete="off" spellcheck="false" style="font-family:'DM Mono',monospace;font-size:11px;" />
+          <button id="btn-toggle-openai" class="sec-btn">Show</button>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field-label">Active profile</label>
+        <select id="sel-active-profile">
+          <option value="">— Use description tab —</option>
+        </select>
+      </div>
+
+      <div class="settings-stats">
+        <div class="stat-item"><span class="stat-val" id="stat-total-fills">0</span><span class="stat-lbl">Total fills</span></div>
+        <div class="stat-item"><span class="stat-val" id="stat-corrections">0</span><span class="stat-lbl">Corrections</span></div>
+        <div class="stat-item"><span class="stat-val" id="stat-profiles">0</span><span class="stat-lbl">Profiles</span></div>
+      </div>
+
+      <button id="btn-clear-all" class="danger-btn" style="width:100%;margin-top:6px;">Clear all stored data</button>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <footer id="ftr">
+    <span id="ftr-left">AI Form Filler Pro · MV3</span>
+    <span id="ftr-right"></span>
+  </footer>
+
+</div>
+<script src="popup.js"></script>
+</body>
+</html>

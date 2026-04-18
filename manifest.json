@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "AI Form Filler Pro",
+  "version": "2.0.0",
+  "description": "Fill any web form instantly with AI — profiles, job apply, resume parsing, confidence scoring, correction learning",
+
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+
+  "host_permissions": [
+    "https://api.groq.com/*",
+    "https://api.anthropic.com/*",
+    "https://api.openai.com/*"
+  ],
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AI Form Filler Pro",
+    "default_icon": {
+      "16":  "icons/icon16.png",
+      "48":  "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+
+  "icons": {
+    "16":  "icons/icon16.png",
+    "48":  "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "web_accessible_resources": [{
+    "resources": ["icons/*.png"],
+    "matches": ["<all_urls>"]
+  }]
+}
