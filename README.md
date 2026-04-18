@@ -1,4 +1,4 @@
-#  AI Form Filler Pro — Browser Extension v2
+#  AI Form Filler Pro — Browser Extension 
 
 > **Fill any web form in seconds using AI — works on job boards, college portals, visa sites, and any form on the web.**
 
